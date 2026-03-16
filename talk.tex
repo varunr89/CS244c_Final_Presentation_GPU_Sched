@@ -9,9 +9,7 @@
 \usepackage{caption}
 \captionsetup[figure]{labelformat=empty}
 \usepackage{tcolorbox}
-\usepackage{pgfpages}
 \graphicspath{{figures/}}
-\setbeameroption{show notes on second screen}
 
 \usetheme{Stanford}
 \input{./style_files_stanford/my_beamer_defs.sty}
@@ -52,7 +50,7 @@
 	\begin{tabular}{c | c | c | c}
 	Varun Ramesh & Jiayu Chang & Hyeonggyu Kim & Stefan Ene
 \end{tabular}
-}
+\vspace{-4ex}}
 
 \institute{
 	\includegraphics[height=0.4in]{./style_files_stanford/SU_New_BlockStree_2color.png}\\
@@ -86,6 +84,7 @@
     \item TRANSITION: Two recent systems tackle one problem each...
   \end{itemize}
 }
+
 \end{frame}
 
 % ============================================================
@@ -98,7 +97,7 @@
   \centering
   \textbf{Gavel} \textit{(OSDI 2020)}\\[4pt]
   \includegraphics[width=0.95\textwidth]{fig2_gavel_algorithm.png}\\[4pt]
-  \small Solves LP to allocate jobs across different GPU types.\\
+  \small Solves LP to allocate jobs across GPU types.\\
   Reduces JCT by 20--70\%.\\[6pt]
   \textcolor{cardinalred}{\textbf{Gap:} Ignores \textit{where} jobs land.}
 \end{column}
@@ -116,7 +115,7 @@
   \includegraphics[width=0.95\textwidth]{fig3_fgd_algorithm.png}\\[4pt]
   \small Places jobs to minimize fragmentation gradient.\\
   Reduces wasted GPUs by 49\%.\\[6pt]
-  \textcolor{cardinalred}{\textbf{Gap:} No flexible policy framework \& Ignore GPU heterogeneity.}
+  \textcolor{cardinalred}{\textbf{Gap:} No flexible policy framework.}
 \end{column}
 \end{columns}
 
@@ -138,76 +137,30 @@
 \begin{frame}{Our Approach: Bridging Two Research Lines}
 
 \begin{columns}[T]
-
-% ================= LEFT COLUMN =================
 \begin{column}{0.42\textwidth}
-\centering
-
-\includegraphics[
-    width=\linewidth,
-    height=0.55\textheight,
-    keepaspectratio
-]{fig_literature_genealogy.png}
-
-\vspace{4pt}
-
-\begin{minipage}{0.95\linewidth}
-\small
-Research lineage of GPU cluster scheduling. 
-Heterogeneity-aware systems (blue) and fragmentation-aware systems (red). 
-\textbf{Our work bridges both directions.}
-\end{minipage}
-
+  \centering
+  \includegraphics[width=\textwidth,height=0.55\textheight,keepaspectratio]{fig_literature_genealogy.png}\\[2pt]
+  \footnotesize Research lineage: heterogeneity-aware (blue),\\fragmentation-aware (red). \textbf{Our work bridges both.}
 \end{column}
-
-% ================= RIGHT COLUMN =================
 \begin{column}{0.55\textwidth}
-\centering
+  \centering
+  \includegraphics[width=\textwidth,height=0.42\textheight,keepaspectratio]{fig1_architecture.png}
 
-\includegraphics[
-    width=\linewidth,
-    height=0.42\textheight,
-    keepaspectratio
-]{fig1_architecture.png}
+  \vspace{2pt}
 
-\vspace{8pt}
-
-\begin{columns}[T]
-
-% -------- Stage 1 --------
-\begin{column}{0.48\textwidth}
-\begin{minipage}[t]{\linewidth}
-\small
-\textbf{Stage 1: Gavel Allocation}
-
-LP allocates jobs across
-different GPU types based on effective throughput.
-
-\vspace{3pt}
-
-\textit{Decision: which GPU type?}
-\end{minipage}
+  \begin{columns}[T]
+  \begin{column}{0.48\textwidth}
+    \footnotesize\textbf{Stage 1 (Gavel):}\\
+    LP allocates across GPU types.\\
+    \textit{``Which type?''}
+  \end{column}
+  \begin{column}{0.48\textwidth}
+    \footnotesize\textbf{Stage 2 (FGD):}\\
+    Minimizes fragmentation gradient.\\
+    \textit{``Which node?''}
+  \end{column}
+  \end{columns}
 \end{column}
-
-% -------- Stage 2 --------
-\begin{column}{0.48\textwidth}
-\begin{minipage}[t]{\linewidth}
-\small
-\textbf{Stage 2: FGD Placement}
-
-Gradient-based placement minimizes
-fragmentation when selecting a node.
-
-\vspace{3pt}
-
-\textit{Decision: which node?}
-\end{minipage}
-\end{column}
-
-\end{columns}
-
-\end{column}
-
 \end{columns}
 
 \note{
@@ -230,7 +183,7 @@ fragmentation when selecting a node.
 \begin{columns}[T]
 \begin{column}{0.48\textwidth}
   \centering
-  \includegraphics[width=\textwidth,height=0.7\textheight,keepaspectratio]{fig4_eval_methodology.png}\\[3pt]
+  \includegraphics[width=\textwidth,height=0.45\textheight,keepaspectratio]{fig4_eval_methodology.png}\\[3pt]
   \footnotesize Gavel uses \textbf{round-based simulation} (dynamic arrivals, measures JCT).
   FGD uses \textbf{inflation methodology} (monotonic fill, measures fragmentation).
   We bridge both.
@@ -448,8 +401,6 @@ Placement shapes capacity; allocation shapes throughput.}
   \item FGD is \textbf{sensitive to workload ordering} -- underperforms in 5/7 arrival orders
   \item All results are \textbf{trace-driven simulation} -- no feedback effects
   \item \textbf{Migration costs} not modeled
-  \item \textbf{GPU communication overhead} not modeled
-  \item \textbf{No performance interference model}: co-located jobs assumed to run at constant efficiency
 \end{itemize}
 
 \end{column}
@@ -459,13 +410,15 @@ Placement shapes capacity; allocation shapes throughput.}
 
 \smallskip
 
-\includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio]{fig_viz_timeseries.png}
+\href{https://youtu.be/Z24wVt0xIxk}{%
+\begin{tikzpicture}
+  \node[inner sep=0] (img) {\includegraphics[width=\textwidth,height=0.45\textheight,keepaspectratio]{fig_viz_timeseries.png}};
+  \node[fill=cardinalred, text=white, rounded corners=3pt, inner sep=4pt, font=\footnotesize\bfseries] at (img.south) {$\blacktriangleright$\ Click to Play Demo};
+\end{tikzpicture}}
 
 \smallskip
 
-\footnotesize 843 experiments. Side-by-side comparison, time-series charts, aggregate results with paper overlays. Open source.
-
-% NOTE: Replace this image with embedded screen recording for actual talk
+\footnotesize 843 experiments. Side-by-side comparison, time-series charts, aggregate results. \href{https://youtu.be/Z24wVt0xIxk}{\textcolor{darkcyan}{\underline{Demo video}}}
 
 \end{column}
 \end{columns}
@@ -508,8 +461,8 @@ Placement shapes capacity; allocation shapes throughput.}
 \vspace{18pt}
 
 \small
-Simulator: \empr{\href{https://github.com/Turquoise-T/cs244c-GPU\_fragment}{github.com/Turquoise-T/cs244c-GPU\_fragment}}\\
-Viz tool: \empr{\href{https://github.com/varunr89/gpu-scheduling-viz}{github.com/varunr89/gpu-scheduling-viz}}
+Simulator: \texttt{github.com/Turquoise-T/cs244c-GPU\_fragment}\\
+Viz tool: \texttt{github.com/varunr89/gpu-scheduling-viz}
 
 \end{center}
 
@@ -525,43 +478,6 @@ Viz tool: \empr{\href{https://github.com/varunr89/gpu-scheduling-viz}{github.com
   \end{itemize}
 }
 
-\end{frame}
-
-
-% ============================================================
-% SLIDE 11+: Ending & References
-% ============================================================
-\begin{frame}
-    \begin{center}
-    {\Large \textbf{Thank you for your attention!}}\\
-    \vspace{4mm}
-    Q\&A
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.2\linewidth]{gpu.png}
-    \end{figure}
-    \end{center}
-\end{frame}
-
-\begin{frame}[allowframebreaks]{References}
-\begin{thebibliography}{00}
-\begin{tiny}
-	\bibitem{SLIDES}
-	S.~Cheong. \empr{\href{https://github.com/sanhacheong/stanford_beamer_template}{https://github.com/sanhacheong/stanford\_beamer\_presentation}}. {GitHub}, August 2017.
-    \bibitem{GAVEL} Narayanan, D., Santhanam, K., Kazhamiaka, F., et al. ``Heterogeneity-Aware Cluster Scheduling Policies for Deep Learning Workloads.'' OSDI 2020. \empr{\href{https://www.usenix.org/conference/osdi20/presentation/narayanan-deepak}{Usenix Web Link}}.
-    \bibitem{FGD} Weng, Q., Yang, L., Yu, Y., et al. ``Beware of Fragmentation: Scheduling GPU-Sharing Workloads with Fragmentation Gradient Descent.'' USENIX ATC 2023. \empr{\href{https://www.usenix.org/conference/atc23/presentation/weng}{Usenix Web Link}}.
-    \bibitem{ALIBABA} Alibaba Group. ``Cluster Data Collected from Production Clusters.'' 2020-2023. \empr{\href{https://github.com/alibaba/clusterdata}{GitHub Web Link}}.
-    \bibitem{CAUSALSIM} Alomar, A., Hamadanian, P., Nasr-Esfahany, A., et al. ``CausalSim: A Causal Framework for Unbiased Trace-Driven Simulation.'' NSDI 2023. \empr{\href{https://www.usenix.org/conference/nsdi23/presentation/alomar}{Usenix Web Link}}.
-    \bibitem{SALUS} Yu, P. and Chowdhury, M. ``Salus: Fine-Grained GPU Sharing Primitives for Deep Learning Applications.'' MLSys, 2020. \empr{\href{https://arxiv.org/abs/1902.04610}{arXiv:1902.04610}}.
-    \bibitem{GANDIVA} Xiao, W., Bhardwaj, R., Ramjee, R., et al. ``Gandiva: Introspective Cluster Scheduling for Deep Learning.'' OSDI 2018. \empr{\href{https://www.usenix.org/conference/osdi18/presentation/xiao}{Usenix Web Link}}.
-    \bibitem{TIRESIAS} Gu, J., Chowdhury, M., Shin, K.G., et al. ``Tiresias: A GPU Cluster Manager for Distributed Deep Learning.'' NSDI 2019. \empr{\href{https://www.usenix.org/conference/nsdi19/presentation/gu}{Usenix Web Link}}.
-    \bibitem{OPTIMUS} Peng, Y., Bao, Y., Chen, Y., et al. ``Optimus: An Efficient Dynamic Resource Scheduler for Deep Learning Clusters.'' EuroSys 2018. \empr{\href{https://dl.acm.org/doi/10.1145/3190508.3190517}{ACM Web Link}}.
-    \bibitem{THEMIS} Mahajan, K., Balasubramanian, A., Singhvi, A., et al. ``Themis: Fair and Efficient GPU Cluster Scheduling.'' NSDI 2020. \empr{\href{https://www.usenix.org/conference/nsdi20/presentation/mahajan}{Usenix Web Link}}.
-    \bibitem{HIVED} Zhao, H., Han, Z., Yang, Z., et al. ``HiveD: Sharing a GPU Cluster for Deep Learning with Guarantees.'' OSDI 2020. \empr{\href{https://www.usenix.org/conference/osdi20/presentation/zhao-hanyu}{Usenix Web Link}}.
-    \bibitem{POLLUX} Qiao, A., Choe, S.K., Subramanya, S.J., et al. ``Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning.'' OSDI 2021. \empr{\href{https://www.usenix.org/conference/osdi21/presentation/qiao}{Usenix Web Link}}.
-    \bibitem{SIA} Jayaram Subramanya, S., Zhong, D., Choudhury, S., et al. ``Sia: Heterogeneity-aware, Goodput-optimized ML-Cluster Scheduling.'' SOSP 2023. \empr{\href{https://dl.acm.org/doi/10.1145/3600006.3613175}{ACM Web Link}}.
-\end{tiny}
-\end{thebibliography}
 \end{frame}
 
 % ============================================================
